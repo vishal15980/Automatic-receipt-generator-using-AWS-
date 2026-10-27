@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183d30">
+  <meta name="description" content="Fieldnote sample storefront and demo checkout.">
+  <title>Fieldnote — demo checkout</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18251f;
+      --muted: #67736c;
+      --paper: #f5f4ef;
+      --card: #fffefa;
+      --green: #275744;
+      --green-dark: #183d30;
+      --line: #e3e5dd;
+      --accent: #d5e7d9;
+      --danger: #9b352c;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); }
+    button, input, select { font: inherit; }
+    .page { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 25px 0; }
+    .brand { display: flex; gap: 11px; align-items: center; font-size: .9rem; font-weight: 800; letter-spacing: .12em; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 11px; background: var(--green-dark); color: white; font-size: 1rem; }
+    .demo-tag { padding: 7px 11px; border: 1px solid #c8d8cb; border-radius: 999px; color: var(--green-dark); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 36px; align-items: center; padding: 35px 0 42px; }
+    .eyebrow { color: var(--green); font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 650px; margin: 13px 0 17px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.8rem, 7vw, 5.3rem); font-weight: 500; letter-spacing: -.055em; line-height: .98; }
+    .hero-copy { max-width: 510px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+    .hero-note { display: flex; gap: 13px; align-items: flex-start; margin-top: 24px; color: var(--green-dark); font-size: .9rem; line-height: 1.55; }
+    .hero-note-icon { display: grid; flex: 0 0 26px; height: 26px; place-items: center; border-radius: 50%; background: var(--accent); font-weight: 800; }
+    .hero-art { position: relative; display: grid; min-height: 275px; place-items: center; overflow: hidden; border-radius: 28px; background: #dce9dc; }
+    .hero-art::before, .hero-art::after { position: absolute; width: 210px; height: 210px; border: 1px solid rgba(39, 87, 68, .18); border-radius: 50%; content: ""; }
+    .hero-art::after { width: 290px; height: 290px; }
+    .plant { position: relative; z-index: 1; width: 150px; height: 180px; }
+    .plant-pot { position: absolute; bottom: 0; left: 34px; width: 82px; height: 67px; border-radius: 7px 7px 22px 22px; background: #bd7753; clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%); }
+    .stem { position: absolute; bottom: 53px; left: 74px; width: 4px; height: 98px; border-radius: 5px; background: #477459; transform: rotate(3deg); }
+    .leaf { position: absolute; z-index: 2; width: 47px; height: 25px; border-radius: 100% 0 100% 0; background: #477459; }
+    .leaf-a { top: 25px; left: 69px; transform: rotate(-32deg); }
+    .leaf-b { top: 50px; left: 29px; transform: rotate(33deg) scaleX(-1); }
+    .leaf-c { top: 69px; left: 76px; transform: rotate(-24deg); }
+    .leaf-d { top: 91px; left: 32px; width: 39px; transform: rotate(29deg) scaleX(-1); }
+    .art-label { position: absolute; right: 18px; bottom: 17px; color: #476552; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 17px; }
+    h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.75rem, 4vw, 2.35rem); font-weight: 500; letter-spacing: -.035em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: .88rem; }
+    .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .product { display: flex; min-height: 205px; flex-direction: column; padding: 21px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+    .product-icon { display: grid; width: 43px; height: 43px; margin-bottom: 17px; place-items: center; border-radius: 14px; background: #edf3e9; font-size: 1.25rem; }
+    .product h3 { margin: 0 0 6px; font-size: 1rem; }
+    .product p { margin: 0 0 18px; color: var(--muted); font-size: .84rem; line-height: 1.5; }
+    .product-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
+    .price { font-weight: 800; }
+    .pick-button { padding: 9px 12px; border: 1px solid #b9cbbd; border-radius: 10px; background: white; color: var(--green-dark); cursor: pointer; font-size: .8rem; font-weight: 700; }
+    .pick-button:hover { background: #eef5ee; }
+    .pick-button:focus-visible, .order-button:focus-visible { outline: 3px solid #98bda0; outline-offset: 2px; }
+    .checkout { display: grid; grid-template-columns: 1fr 340px; gap: 22px; margin: 34px 0 58px; align-items: start; }
+    .checkout-panel, .summary { border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+    .checkout-panel { padding: clamp(21px, 4vw, 34px); }
+    .checkout-panel > p { margin: 9px 0 25px; color: var(--muted); line-height: 1.6; }
+    .field { display: grid; gap: 8px; margin: 0 0 18px; }
+    .field label { font-size: .87rem; font-weight: 700; }
+    .field input, .field select { width: 100%; min-height: 48px; padding: 0 13px; border: 1px solid #cfd5cc; border-radius: 11px; background: white; color: var(--ink); }
+    .field input:focus, .field select:focus { outline: 3px solid #d9e9dc; border-color: var(--green); }
+    .field small { color: var(--muted); line-height: 1.45; }
+    .order-button { width: 100%; min-height: 51px; margin-top: 4px; border: 0; border-radius: 12px; background: var(--green-dark); color: white; cursor: pointer; font-weight: 800; }
+    .order-button:hover { background: var(--green); }
+    .order-button:disabled { cursor: wait; opacity: .65; }
+    .summary { padding: 22px; }
+    .summary h3 { margin: 0 0 20px; font-family: Georgia, "Times New Roman", serif; font-size: 1.45rem; font-weight: 500; }
+    .summary-row { display: flex; justify-content: space-between; gap: 14px; margin: 13px 0; color: var(--muted); font-size: .9rem; }
+    .summary-row strong { color: var(--ink); text-align: right; }
+    .summary-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--line); font-weight: 800; }
+    .summary-note { margin: 15px 0 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+    .status { margin-top: 17px; padding: 13px 14px; border-radius: 11px; background: #edf4ee; color: var(--green-dark); font-size: .9rem; line-height: 1.55; overflow-wrap: anywhere; }
+    .status.error { background: #fbefed; color: var(--danger); }
+    .status[hidden] { display: none; }
+    .footer { padding: 20px 0 34px; border-top: 1px solid var(--line); color: var(--muted); font-size: .78rem; line-height: 1.6; }
+    @media (max-width: 780px) {
+      .hero { grid-template-columns: 1fr; gap: 25px; padding-top: 20px; }
+      .hero-art { min-height: 220px; }
+      .products { grid-template-columns: 1fr; }
+      .product { min-height: 175px; }
+      .checkout { grid-template-columns: 1fr; }
+      .summary { order: -1; }
+      .section-heading { align-items: start; flex-direction: column; }
+    }
+    @media (max-width: 460px) {
+      .page { width: min(100% - 26px, 1120px); }
+      .topbar { padding: 17px 0; }
+      .demo-tag { font-size: .65rem; }
+      .hero { padding-bottom: 30px; }
+      .hero-art { min-height: 195px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">f</span><span>FIELDNOTE</span></div>
+      <span class="demo-tag">AWS receipt demo</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <div class="eyebrow">Small tools for greener spaces</div>
+          <h1 id="hero-title">Good things grow with the right tools.</h1>
+          <p class="hero-copy">Choose a sample product and create a demo order with the Fieldnote receipt service.</p>
+          <div class="hero-note"><span class="hero-note-icon" aria-hidden="true">✓</span><span>This is a demo only. It does not collect payment details or process payments.</span></div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="plant"><span class="stem"></span><span class="leaf leaf-a"></span><span class="leaf leaf-b"></span><span class="leaf leaf-c"></span><span class="leaf leaf-d"></span><span class="plant-pot"></span></div>
+          <span class="art-label">Make room to grow</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="products-title">
+        <div class="section-heading">
+          <h2 id="products-title">The little shop</h2>
+          <p>Sample catalog · prices in Indian rupees</p>
+        </div>
+        <div class="products">
+          <article class="product">
+            <div class="product-icon" aria-hidden="true">🌱</div>
+            <h3>Soil Sensor Kit</h3>
+            <p>A simple sensor bundle for a small indoor garden.</p>
+            <div class="product-bottom"><span class="price">₹1,499.00</span><button class="pick-button" type="button" data-product="soil-sensor-kit">Choose</button></div>
+          </article>
+          <article class="product">
+            <div class="product-icon" aria-hidden="true">💧</div>
+            <h3>Smart Plant Monitor</h3>
+            <p>A compact monitor for keeping an eye on your plants.</p>
+            <div class="product-bottom"><span class="price">₹999.00</span><button class="pick-button" type="button" data-product="smart-plant-monitor">Choose</button></div>
+          </article>
+          <article class="product">
+            <div class="product-icon" aria-hidden="true">🪴</div>
+            <h3>Garden Tool Kit</h3>
+            <p>Everyday tools for tending a small home garden.</p>
+            <div class="product-bottom"><span class="price">₹699.00</span><button class="pick-button" type="button" data-product="garden-tool-kit">Choose</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="checkout" aria-labelledby="checkout-title">
+        <form class="checkout-panel" id="checkout-form">
+          <div class="eyebrow">Checkout</div>
+          <h2 id="checkout-title">Where should we send your receipt?</h2>
+          <p>Enter an email address and choose a product. This sample checkout creates a demo order only; no payment is collected.</p>
+
+          <div class="field">
+            <label for="email">Email for receipt</label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
+            <small>If Amazon SES is in sandbox mode, the recipient address may need to be verified in the same AWS Region.</small>
+          </div>
+          <div class="field">
+            <label for="product">Product</label>
+            <select id="product" name="product" required>
+              <option value="soil-sensor-kit">Soil Sensor Kit — ₹1,499.00</option>
+              <option value="smart-plant-monitor">Smart Plant Monitor — ₹999.00</option>
+              <option value="garden-tool-kit">Garden Tool Kit — ₹699.00</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="quantity">Quantity</label>
+            <input id="quantity" name="quantity" type="number" min="1" max="10" step="1" value="1" required>
+          </div>
+          <button class="order-button" id="order-button" type="submit">Create demo order and receipt</button>
+          <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+        </form>
+
+        <aside class="summary" aria-label="Order summary">
+          <h3>Your order</h3>
+          <div class="summary-row"><span>Product</span><strong id="summary-product">Soil Sensor Kit</strong></div>
+          <div class="summary-row"><span>Quantity</span><strong id="summary-quantity">1</strong></div>
+          <div class="summary-row"><span>Unit price</span><strong id="summary-unit">₹1,499.00</strong></div>
+          <div class="summary-total"><span>Demo total</span><span id="summary-total">₹1,499.00</span></div>
+          <p class="summary-note">The backend calculates the order total from its own catalog. No card details are requested and no payment is processed.</p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer">Fieldnote is a sample storefront for demonstrating an AWS API-backed receipt workflow. This demo does not process payments.</footer>
+  </div>
+
+  <script>
+    // This is the API Gateway invoke URL, including the deployed stage.
+    const API_BASE_URL = "https://0681bs7ybc.execute-api.ap-south-1.amazonaws.com/dev";
+
+    // Keep these IDs and prices in sync with the Lambda product catalog.
+    const PRODUCTS = Object.freeze({
+      "soil-sensor-kit": { name: "Soil Sensor Kit", unitPrice: 1499 },
+      "smart-plant-monitor": { name: "Smart Plant Monitor", unitPrice: 999 },
+      "garden-tool-kit": { name: "Garden Tool Kit", unitPrice: 699 }
+    });
+
+    const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" });
+    const form = document.getElementById("checkout-form");
+    const productSelect = document.getElementById("product");
+    const quantityInput = document.getElementById("quantity");
+    const statusBox = document.getElementById("status");
+    const orderButton = document.getElementById("order-button");
+
+    function updateSummary() {
+      const product = PRODUCTS[productSelect.value];
+      const quantity = Number(quantityInput.value);
+      const validQuantity = Number.isInteger(quantity) && quantity >= 1 && quantity <= 10;
+
+      document.getElementById("summary-product").textContent = product.name;
+      document.getElementById("summary-quantity").textContent = validQuantity ? String(quantity) : "—";
+      document.getElementById("summary-unit").textContent = inr.format(product.unitPrice);
+      document.getElementById("summary-total").textContent = validQuantity ? inr.format(product.unitPrice * quantity) : "—";
+    }
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.classList.toggle("error", isError);
+      statusBox.hidden = false;
+    }
+
+    function getErrorMessage(payload, statusCode) {
+      if (payload && typeof payload === "object") {
+        if (typeof payload.error === "string" && payload.error) return payload.error;
+        if (typeof payload.message === "string" && payload.message) return payload.message;
+      }
+      return `The API returned HTTP ${statusCode}. Please try again.`;
+    }
+
+    productSelect.addEventListener("change", updateSummary);
+    quantityInput.addEventListener("input", updateSummary);
+
+    document.querySelectorAll("[data-product]").forEach((button) => {
+      button.addEventListener("click", () => {
+        productSelect.value = button.dataset.product;
+        quantityInput.value = "1";
+        updateSummary();
+        document.getElementById("email").focus();
+        document.getElementById("checkout-title").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const email = document.getElementById("email").value.trim();
+      const productId = productSelect.value;
+      const quantity = Number(quantityInput.value);
+
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
+        showStatus("Choose a quantity from 1 to 10.", true);
+        return;
+      }
+
+      orderButton.disabled = true;
+      orderButton.textContent = "Creating your receipt…";
+      showStatus("Sending your demo order to the receipt service…");
+
+      try {
+        const response = await fetch(`${API_BASE_URL.replace(/\/$/, "")}/purchase`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, productId, quantity })
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(getErrorMessage(result, response.status));
+        }
+
+        const item = PRODUCTS[productId];
+        const serverTotal = Number(result.total);
+        if (!Number.isFinite(serverTotal) || !result.receipt_id) {
+          throw new Error("The order service returned an unexpected response. Check the Lambda response fields.");
+        }
+
+        const paymentText = result.payment_processed === true
+          ? "The service reported payment processing; check the Lambda configuration because this storefront is intended for demo orders only."
+          : "No payment was processed.";
+        const emailText = result.email_message_id
+          ? ` Receipt email message ID: ${result.email_message_id}.`
+          : "";
+        showStatus(`Demo order ${result.receipt_id} created for ${item.name}. Total: ${inr.format(serverTotal)}. ${paymentText}${emailText}`);
+      } catch (error) {
+        const message = error instanceof TypeError
+          ? "Could not reach the receipt service. Check the API URL and API Gateway CORS settings."
+          : (error.message || "Could not create the receipt. Check the API URL and try again.");
+        showStatus(message, true);
+      } finally {
+        orderButton.disabled = false;
+        orderButton.textContent = "Create demo order and receipt";
+      }
+    });
+
+    updateSummary();
+  </script>
+</body>
+</html>
